@@ -1,19 +1,14 @@
-// src/db.js
 const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    // Eğer SSL gerekiyorsa (prod) burada yapılandır:
-    // ssl: { rejectUnauthorized: false }
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 });
 
-pool.on('error', (err) => {
-    console.error('Unexpected PG error', err);
-    process.exit(-1);
-});
+pool.on('connect', () => console.log('Veritabanına bağlanıldı'));
 
-module.exports = {
-    query: (text, params) => pool.query(text, params),
-    pool
-};
+module.exports = pool;
